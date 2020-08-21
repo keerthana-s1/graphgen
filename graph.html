@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <link rel="stylesheet" type="text/css" href="graph.css" media="screen"/>
+    </head>
+<body>
+
+    
+    <div>
+    <h2>Enter Equation</h2><button class="main" onclick="neweq()">New Graph </button> <button onclick="trig('sin')">Sin</button><button onclick="trig('cos')">Cos</button><button onclick="trig('tan')">Tan</button><button onclick="trig('log10')">log</button><button onclick="trig('log')">ln</button><button onclick="trig('pow')">Power</button><br>
+    <span id="eq">y =
+    <input type="text" id="1" name="1" onclick="actf=1;">
+        <button id="b1" onclick="draw(id)" class="main">generate </button><br></span>
+    <p id="error"></p></div>
+   <button onclick="zoomin()">ZOOM IN</button><button onclick="zoomout()">ZOOM OUT</button><br>
+    <canvas id="canvas" height="450px" width="900px"></canvas>
+    
+    <div></div>
+
+    
+<script>
+     const canvas = document.getElementById('canvas');
+     const ctx = canvas.getContext('2d');
+     const equations =[]
+     var eqno=1;
+     var actf,scale =100;
+     function draw(id)
+      { id=id.slice(1)
+        var str = document.getElementById(id).value
+       //str="x+4"
+        console.log(id)
+        equations[id] = str
+       console.log(equations)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawscale();
+        console.log('here')
+        drawcurves(equations)
+        //converteq(5);
+      }
+    function drawcurves(eq)
+    {   
+        eq.forEach((str)=>{
+            ctx.save();
+        ctx.translate(450,225)   ;
+        ctx.moveTo(0,-450);
+        ctx.beginPath();
+        for(i=-450;i<=450;i++)
+        {
+            ctx.lineTo(i,-converteq(i,str))
+        }
+        ctx.stroke();
+        ctx.restore();
+        })
+    }
+    function neweq() 
+     { 
+       eqno++
+       var div = document.createElement("DIV");
+       div.innerHTML="y = "
+       var newfield = document.createElement('INPUT')
+       newfield.type = "text"
+       newfield.id=eqno
+       newfield.addEventListener('click', event =>
+        {
+            actf=newfield.id
+        });
+       div.appendChild(newfield);
+       var but = document.createElement("BUTTON")
+       but.innerHTML="Generate"
+       but.className="main"
+       but.id="b"+eqno
+       but.addEventListener('click', event =>
+        {
+            draw(but.id)
+        });
+       div.appendChild(but)
+       document.getElementById("eq").appendChild(div)
+     }
+    function zoomin() 
+    {   ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawscale();
+        scale=scale + 10;
+        drawcurves(equations)
+    }
+    
+    function zoomout() 
+    {   ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawscale();
+        scale=scale - 10;
+        drawcurves(equations)
+    }
+    
+    function drawscale()
+      {
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(0,canvas.height/2);
+        ctx.lineTo(canvas.width,canvas.height/2)
+        ctx.moveTo(canvas.width/2,0)
+        ctx.lineTo(canvas.width/2,canvas.height)
+        for(i=-450;i<=450;i++)
+        {
+            //ctx.lineTo(i,-converteq(i,str))
+        }
+        ctx.stroke();
+        ctx.restore();
+        //converteq(5);
+      }
+    function converteq(x,str) 
+      {
+        x=x/scale
+        var n = eval(str)
+        n=n*scale
+        return n;
+      }
+    function trig(str) 
+      { 
+        var st = document.getElementById(actf).value
+        if(str=="pow")
+            {
+                document.getElementById(actf).value="Math.pow("+st+",)"
+            }
+         else 
+             {
+                 document.getElementById(actf).value="Math."+str +"("+st + ")"
+             }
+      }
+</script>
+
+</body>
+</html>
